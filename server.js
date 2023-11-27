@@ -1,10 +1,32 @@
 var http = require("http");
-var port = 8686;
+var port = 8687;
 
-function randomInt (low, high) {
-  return Math.floor(Math.random() * (high - low) + low);
-}
+const axios = require('axios');
 
+const url = 'http://devices.webofthings.io/pi/sensors/temperature/';
+
+let temperature 
+
+
+async function getTemperature() {
+    try {
+
+      const response = await axios.get(url);
+
+      if (response.status >= 200 && response.status < 300) {
+  
+        temperature = response.data.value;
+    
+  
+      } else {
+        console.error('Erro ao obter a temperatura. Código de resposta:', response.status);
+      }
+    } catch (error) {
+      console.error('Erro ao realizar a solicitação:', error.message);
+    }
+  }
+
+getTemperature()
 
 http.createServer(function(req,res){
   console.log('New incoming client request for ' + req.url);
@@ -15,7 +37,6 @@ http.createServer(function(req,res){
     ContentType = 'application/json';
   }
 
-  const temperature = 20
 
   res.writeHeader(200, {'Content-Type': ContentType}); //#A
   switch(req.url) { //#B
@@ -35,9 +56,6 @@ http.createServer(function(req,res){
           };
         var jsonResponse = JSON.stringify(responseObject);
         res.write(jsonResponse);
-      break;
-    case '/light':
-      res.write('{"light" :' + randomInt(1, 100) + '}');
       break;
     case '/xmlfile.xml': 
       res.write('<?xml version="1.0" encoding="UTF-8" ?><root><data>Example XML Content</data></root>');
