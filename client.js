@@ -1,7 +1,7 @@
 const http = require('http');
 
 var options = Object();
-var url = 'http://localhost:8686/temperature';
+var url = 'http://localhost:8687/temperature';
 options.headers = {"Accept" : "application/json"};
 
 http.get(url, options, (resp) => {

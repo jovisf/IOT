@@ -10,14 +10,12 @@ let temperature
 
 async function getTemperature() {
     try {
-
       const response = await axios.get(url);
 
       if (response.status >= 200 && response.status < 300) {
   
         temperature = response.data.value;
     
-  
       } else {
         console.error('Erro ao obter a temperatura. Código de resposta:', response.status);
       }
@@ -57,8 +55,11 @@ http.createServer(function(req,res){
         var jsonResponse = JSON.stringify(responseObject);
         res.write(jsonResponse);
       break;
-    case '/xmlfile.xml': 
-      res.write('<?xml version="1.0" encoding="UTF-8" ?><root><data>Example XML Content</data></root>');
+    case '/temperatureFxml': 
+      res.write('<?xml version="1.0" encoding="UTF-8" ?><root><data>'+ (temperature*1.8 + 32) + '</data></root>');
+      break;
+    case '/temperatureCxml': 
+      res.write('<?xml version="1.0" encoding="UTF-8" ?><root><data>'+ (temperature) + '</data></root>');
       break;
     default:
       res.write('{"hello" : "world"}');
